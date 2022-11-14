@@ -1,70 +1,65 @@
-CREATE TABLE "Employees" (
-    "emp_no" int   NOT NULL,
-    "emp_title_id" varchar(50)   NOT NULL,
-    "birth_date" date   NOT NULL,
-    "first_name" varchar(50)   NOT NULL,
-    "last_name" varchar(50)   NOT NULL,
-    "sex" varchar(50)   NOT NULL,
-    "hire_date" date   NOT NULL,
-    CONSTRAINT "pk_Employees" PRIMARY KEY (
-        "emp_no"
-     )
-);
+-- 1. List the following details of each employee: 
+-- employee number, last name, first name, sex, and salary.
+select "Employees".emp_no,
+	"Employees".last_name,
+	"Employees".first_name,
+	"Employees".sex,
+	"Salaries".salary
+from "Employees"
+Join "Salaries" on
+"Employees".emp_no = "Salaries".emp_no;
 
-CREATE TABLE "Departments" (
-    "dept_no" varchar(50)   NOT NULL,
-    "dept_name" varchar(50)   NOT NULL,
-    CONSTRAINT "pk_Departments" PRIMARY KEY (
-        "dept_no"
-     )
-);
+-- 2. List first name, last name, and hire date for employees who were hired in 1986.
+select first_name, last_name, hire_date from "Employees" 
+where hire_date >= '1986-01-01' and hire_date < '1987-01-01' order by hire_date
 
-drop table if exists "Dept_Emp"
-CREATE TABLE "Dept_Emp" (
-    "emp_no" int   NOT NULL,
-    "dept_no" varchar(50)   NOT NULL
---     CONSTRAINT "pk_Dept_Emp" PRIMARY KEY (
---         "emp_no"
---      )
-);
+-- 3. List the manager of each department with the following information: 
+-- department number, department name, the manager's employee number, last name, first name.
+select "Departments".dept_no,
+	"Departments".dept_name,
+	"Dept_Manager".emp_no,
+	"Employees".last_name,
+	"Employees".first_name
+from "Departments"
+Join "Dept_Manager" on
+"Departments".dept_no = "Dept_Manager".dept_no
+join "Employees" on 
+"Employees".emp_no = "Dept_Manager".emp_no;
 
-CREATE TABLE "Salaries" (
-    "emp_no" int   NOT NULL,
-    "salary" money   NOT NULL,
-    CONSTRAINT "pk_Salaries" PRIMARY KEY (
-        "emp_no"
-     )
-);
+-- 4. List the department of each employee with the following information: 
+-- employee number, last name, first name, and department name.
+select "Employees".emp_no, 
+	   "Employees".last_name,
+	   "Employees".first_name,
+	   "Departments".dept_name
+from "Employees"
+join "Dept_Emp" on 
+"Employees".emp_no = "Dept_Emp".emp_no
+join "Departments" on
+"Dept_Emp".dept_no = "Departments".dept_no
+;
 
-CREATE TABLE "Dept_Manager" (
-    "dept_no" varchar(50)   NOT NULL,
-    "emp_no" int   NOT NULL
-);
+-- 5. List first name, last name, and sex for employees whose 
+-- first name is "Hercules" and last names begin with "B."
+select first_name, last_name, sex from "Employees"
+where first_name = 'Hercules' and last_name like 'B%';
 
-CREATE TABLE "Titles" (
-    "title_id" varchar(50)   NOT NULL,
-    "title" varchar(50)   NOT NULL,
-    CONSTRAINT "pk_Titles" PRIMARY KEY (
-        "title_id"
-     )
-);
 
-ALTER TABLE "Employees" ADD CONSTRAINT "fk_Employees_emp_title_id" FOREIGN KEY("emp_title_id")
-REFERENCES "Titles" ("title_id");
+-- 6. List all employees in the Sales department, 
+-- including their employee number, last name, first name, and department name.
 
-ALTER TABLE "Dept_Emp" ADD CONSTRAINT "fk_Dept_Emp_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
+select "Employees".emp_no, 
+	   "Employees".last_name,
+	   "Employees".first_name,
+	   "Departments".dept_name 
+from "Employees" 
+join "Dept_Emp" on 
+"Employees".emp_no = "Dept_Emp".emp_no
+join "Departments" on
+"Dept_Emp".dept_no = "Departments".dept_no
+where "Departments".dept_name = 'Sales'
+;
 
-ALTER TABLE "Dept_Emp" ADD CONSTRAINT "fk_Dept_Emp_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "Departments" ("dept_no");
+-- 7. List all employees in the Sales and Development departments, including their employee number, last name, first name, and department name.
 
-ALTER TABLE "Salaries" ADD CONSTRAINT "fk_Salaries_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
-
-ALTER TABLE "Dept_Manager" ADD CONSTRAINT "fk_Dept_Manager_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "Departments" ("dept_no");
-
-ALTER TABLE "Dept_Manager" ADD CONSTRAINT "fk_Dept_Manager_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "Employees" ("emp_no");
-
-select * from "Dept_Manager"
+-- 8. List the frequency count of employee last names (i.e., how many employees share each last name) in descending order.
