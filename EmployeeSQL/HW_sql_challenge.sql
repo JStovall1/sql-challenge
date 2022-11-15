@@ -60,6 +60,20 @@ join "Departments" on
 where "Departments".dept_name = 'Sales'
 ;
 
--- 7. List all employees in the Sales and Development departments, including their employee number, last name, first name, and department name.
+-- 7. List all employees in the Sales and Development departments,
+-- including their employee number, last name, first name, and department name.
+select "Employees".emp_no, 
+	   "Employees".last_name,
+	   "Employees".first_name,
+	   "Departments".dept_name 
+from "Employees" 
+join "Dept_Emp" on 
+"Employees".emp_no = "Dept_Emp".emp_no
+join "Departments" on
+"Dept_Emp".dept_no = "Departments".dept_no
+where "Departments".dept_name = 'Sales' or "Departments".dept_name = 'Development'
+;
 
--- 8. List the frequency count of employee last names (i.e., how many employees share each last name) in descending order.
+-- 8. List the frequency count of employee last names 
+-- (i.e., how many employees share each last name) in descending order.
+select last_name, count(last_name) from "Employees" group by last_name order by count(last_name) desc; 
